@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 
 // Sets default values
@@ -29,6 +30,21 @@ AMyCharacter::AMyCharacter()
 	}
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	FStringClassReference Anim_Male_Ref(TEXT("AnimBlueprint'/Game/Blueprints/Animation/ABP_Male.ABP_Male_C'"));
+	if (UClass* Anim_Male_Class = Anim_Male_Ref.TryLoadClass<UAnimInstance>())
+	{
+		GetMesh()->SetAnimInstanceClass(Anim_Male_Class);
+	}
+
+	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Weapon(TEXT("StaticMesh'/Game/Weapons/M4A1/SM_M4A1.SM_M4A1'"));
+	if (SM_Weapon.Succeeded())
+	{
+		Weapon->SetStaticMesh(SM_Weapon.Object);
+	}
 }
 
 // Called when the game starts or when spawned

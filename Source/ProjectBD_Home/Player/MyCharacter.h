@@ -39,5 +39,7 @@ public:
 		class USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UCameraComponent* Camera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UStaticMeshComponent* Weapon;
 
 };
