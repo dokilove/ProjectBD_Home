@@ -15,6 +15,11 @@ class PROJECTBD_HOME_API UMyCharacterAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 	
-	
-	
+public:
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		float Direction;
 };
