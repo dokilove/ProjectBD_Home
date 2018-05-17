@@ -25,6 +25,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION()
+		void MoveForward(float Value);
+	UFUNCTION()
+		void MoveRight(float Value);
+	UFUNCTION()
+		void LookUp(float Value);
+	UFUNCTION()
+		void Turn(float Value);
 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

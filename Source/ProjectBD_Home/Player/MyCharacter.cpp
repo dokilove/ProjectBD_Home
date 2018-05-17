@@ -19,6 +19,9 @@ AMyCharacter::AMyCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm);
 
+	bUseControllerRotationPitch = false;
+	SpringArm->bUsePawnControlRotation = true;
+
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Male(TEXT("SkeletalMesh'/Game/Male_Grunt/Mesh/male_grunt.male_grunt'"));
 	if (SK_Male.Succeeded())
 	{
@@ -47,5 +50,41 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this,
+		&AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this,
+		&AMyCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this,
+		&AMyCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this,
+		&AMyCharacter::Turn);
 }
 
+void AMyCharacter::MoveForward(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddMovementInput(GetActorForwardVector(), Value);
+	}
+}
+void AMyCharacter::MoveRight(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddMovementInput(GetActorRightVector(), Value);
+	}
+}
+void AMyCharacter::LookUp(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddControllerPitchInput(Value);
+	}
+}
+void AMyCharacter::Turn(float Value)
+{
+	if (Value != 0.0f)
+	{
+		AddControllerYawInput(Value);
+	}
+}
