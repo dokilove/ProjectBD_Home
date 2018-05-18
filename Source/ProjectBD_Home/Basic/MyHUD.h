@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "BasicGM.generated.h"
+#include "GameFramework/HUD.h"
+#include "MyHUD.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTBD_HOME_API ABasicGM : public AGameModeBase
+class PROJECTBD_HOME_API AMyHUD : public AHUD
 {
 	GENERATED_BODY()
 	
-	
 public:
-	ABasicGM();
+	AMyHUD();
+	virtual void DrawHUD() override;
 	
 };

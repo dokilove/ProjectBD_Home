@@ -13,8 +13,9 @@ UCLASS()
 class PROJECTBD_HOME_API ABasicPC : public APlayerController
 {
 	GENERATED_BODY()
-	
-	
-	
+
+
+public:
+	ABasicPC();
 	
 };
