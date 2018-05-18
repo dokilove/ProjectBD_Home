@@ -7,7 +7,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
-
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -22,6 +22,8 @@ AMyCharacter::AMyCharacter()
 
 	bUseControllerRotationPitch = false;
 	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->SocketOffset = FVector(0, 50, 70);
+	SpringArm->TargetArmLength = 180.0f;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Male(TEXT("SkeletalMesh'/Game/Male_Grunt/Mesh/male_grunt.male_grunt'"));
 	if (SK_Male.Succeeded())
@@ -45,6 +47,8 @@ AMyCharacter::AMyCharacter()
 	{
 		Weapon->SetStaticMesh(SM_Weapon.Object);
 	}
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -74,6 +78,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("Turn"), this,
 		&AMyCharacter::Turn);
+	PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryCrouch);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -102,5 +108,17 @@ void AMyCharacter::Turn(float Value)
 	if (Value != 0.0f)
 	{
 		AddControllerYawInput(Value);
+	}
+}
+
+void AMyCharacter::TryCrouch()
+{
+	if (CanCrouch())
+	{
+		Crouch();
+	}
+	else
+	{
+		UnCrouch();
 	}
 }

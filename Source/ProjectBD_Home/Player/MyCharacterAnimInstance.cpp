@@ -15,6 +15,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		Speed = Pawn->GetCharacterMovement()->Velocity.Size();
 		Direction = CalculateDirection(Pawn->GetCharacterMovement()->Velocity,
 			Pawn->GetActorRotation());
+		bIsCrouch = Pawn->bIsCrouched;
 	}
 }
 

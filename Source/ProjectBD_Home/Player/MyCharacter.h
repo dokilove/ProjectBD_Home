@@ -33,6 +33,8 @@ public:
 		void LookUp(float Value);
 	UFUNCTION()
 		void Turn(float Value);
+	UFUNCTION()
+		void TryCrouch();
 
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
