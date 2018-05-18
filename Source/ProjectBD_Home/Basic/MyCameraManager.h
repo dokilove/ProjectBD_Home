@@ -19,4 +19,7 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void UpdateCamera(float DeltaTime) override;
+
+	float CrouchOffset;
+	float DefaultCameraZ;
 };

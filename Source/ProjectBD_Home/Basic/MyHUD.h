@@ -18,4 +18,6 @@ public:
 	AMyHUD();
 	virtual void DrawHUD() override;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UTexture2D* Crosshair;
 };
