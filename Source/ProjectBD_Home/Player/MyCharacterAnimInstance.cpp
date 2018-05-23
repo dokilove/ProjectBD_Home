@@ -19,7 +19,27 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		Pitch = Pawn->GetAimoffset().Pitch;
 		bIsIronsight = Pawn->bIsIronsight;
 		bIsSprint = Pawn->bIsSprint;
+		bIsProne = Pawn->bIsProne;
+		bIsProning = Pawn->bIsProning;
 	}
 }
 
+void UMyCharacterAnimInstance::AnimNotify_LockMove()
+{
+	AMyCharacter* Pawn = Cast<AMyCharacter>(TryGetPawnOwner());
 
+	if (Pawn && Pawn->IsValidLowLevel())
+	{
+		Pawn->bIsProning = true;
+	}
+}
+
+void UMyCharacterAnimInstance::AnimNotify_UnlockMove()
+{
+	AMyCharacter* Pawn = Cast<AMyCharacter>(TryGetPawnOwner());
+
+	if (Pawn && Pawn->IsValidLowLevel())
+	{
+		Pawn->bIsProning = false;
+	}
+}

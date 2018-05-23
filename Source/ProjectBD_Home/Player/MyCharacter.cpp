@@ -65,7 +65,7 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (GetCharacterMovement()->Velocity.Size() <= 0.0f)
+	if (GetCharacterMovement()->Velocity.Size() <= 0.0f && !bIsProne)
 	{
 		UnSprint();
 	}
@@ -103,14 +103,14 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsProning)
 	{
 		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
 void AMyCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f && !bIsSprint)
+	if (Value != 0.0f && !bIsSprint && !bIsProning)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
@@ -132,6 +132,11 @@ void AMyCharacter::Turn(float Value)
 
 void AMyCharacter::TryCrouch()
 {
+	if (bIsProne)
+	{
+		return;
+	}
+
 	if (CanCrouch())
 	{
 		Crouch();
@@ -144,6 +149,11 @@ void AMyCharacter::TryCrouch()
 
 void AMyCharacter::TryIronsight()
 {
+	if (bIsProne)
+	{
+		return;
+	}
+
 	if (!bIsIronsight)
 	{
 		SetIronsight();
@@ -170,6 +180,35 @@ void AMyCharacter::ReleaseIronsight()
 
 void AMyCharacter::TryProne()
 {
+	if (!bIsProne)
+	{
+		StartProne();
+	}
+	else
+	{
+		EndProne();
+	}
+	UnCrouch();
+}
+
+void AMyCharacter::StartProne()
+{
+	bIsProne = true;
+
+	GetCharacterMovement()->MaxWalkSpeed = ProneSpeed;
+}
+
+void AMyCharacter::EndProne()
+{
+	bIsProne = false;
+	if (bIsIronsight)
+	{
+		SetIronsight();
+	}
+	else
+	{
+		ReleaseIronsight();
+	}
 }
 
 void AMyCharacter::Sprint()
@@ -189,10 +228,15 @@ void AMyCharacter::UnSprint()
 
 void AMyCharacter::LookAround()
 {
+	if (!bIsIronsight)
+	{
+		bUseControllerRotationYaw = false;
+	}
 }
 
 void AMyCharacter::LookForward()
 {
+	bUseControllerRotationYaw = true;
 }
 
 FRotator AMyCharacter::GetAimoffset() const

@@ -41,6 +41,8 @@ public:
 	void ReleaseIronsight();
 	UFUNCTION()
 		void TryProne();
+	void StartProne();
+	void EndProne();
 
 	UFUNCTION()
 		void Sprint();
@@ -73,5 +75,9 @@ public:
 		bool bIsIronsight = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bIsSprint = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bIsProne = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bIsProning = false;
 
 };
