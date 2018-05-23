@@ -16,6 +16,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		Direction = CalculateDirection(Pawn->GetCharacterMovement()->Velocity,
 			Pawn->GetActorRotation());
 		bIsCrouch = Pawn->bIsCrouched;
+		Pitch = Pawn->GetAimoffset().Pitch;
 	}
 }
 

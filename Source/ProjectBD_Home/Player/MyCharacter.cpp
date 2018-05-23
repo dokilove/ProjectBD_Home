@@ -122,3 +122,11 @@ void AMyCharacter::TryCrouch()
 		UnCrouch();
 	}
 }
+
+FRotator AMyCharacter::GetAimoffset() const
+{
+	const FVector AimDirWS = GetBaseAimRotation().Vector();
+	const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
+	const FRotator AimRot = AimDirLS.Rotation();
+	return AimRot;
+}

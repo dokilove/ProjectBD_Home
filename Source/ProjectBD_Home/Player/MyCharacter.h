@@ -35,7 +35,8 @@ public:
 		void Turn(float Value);
 	UFUNCTION()
 		void TryCrouch();
-
+	
+	FRotator GetAimoffset() const;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class USpringArmComponent* SpringArm;
