@@ -71,5 +71,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bIsIronsight = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bIsSprint = false;
 
 };

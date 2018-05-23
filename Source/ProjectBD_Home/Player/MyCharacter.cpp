@@ -65,6 +65,10 @@ void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetCharacterMovement()->Velocity.Size() <= 0.0f)
+	{
+		UnSprint();
+	}
 }
 
 // Called to bind functionality to input
@@ -106,7 +110,7 @@ void AMyCharacter::MoveForward(float Value)
 }
 void AMyCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (Value != 0.0f && !bIsSprint)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
@@ -170,10 +174,17 @@ void AMyCharacter::TryProne()
 
 void AMyCharacter::Sprint()
 {
+	if (!bIsCrouched && !bIsIronsight)
+	{
+		bIsSprint = true;
+		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	}
 }
 
 void AMyCharacter::UnSprint()
 {
+	bIsSprint = false;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 }
 
 void AMyCharacter::LookAround()

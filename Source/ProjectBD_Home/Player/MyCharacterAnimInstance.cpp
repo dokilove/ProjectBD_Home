@@ -18,6 +18,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsCrouch = Pawn->bIsCrouched;
 		Pitch = Pawn->GetAimoffset().Pitch;
 		bIsIronsight = Pawn->bIsIronsight;
+		bIsSprint = Pawn->bIsSprint;
 	}
 }
 

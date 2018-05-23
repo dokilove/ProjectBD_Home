@@ -28,4 +28,6 @@ public:
 		float Pitch;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		bool bIsIronsight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		bool bIsSprint;
 };
