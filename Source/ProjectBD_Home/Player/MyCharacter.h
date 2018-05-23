@@ -35,6 +35,21 @@ public:
 		void Turn(float Value);
 	UFUNCTION()
 		void TryCrouch();
+	UFUNCTION()
+		void TryIronsight();
+	void SetIronsight();
+	void ReleaseIronsight();
+	UFUNCTION()
+		void TryProne();
+
+	UFUNCTION()
+		void Sprint();
+	UFUNCTION()
+		void UnSprint();
+	UFUNCTION()
+		void LookAround();
+	UFUNCTION()
+		void LookForward();
 	
 	FRotator GetAimoffset() const;
 	
@@ -44,5 +59,17 @@ public:
 		class UCameraComponent* Camera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UStaticMeshComponent* Weapon;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float ProneSpeed = 50.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float CrouchSpeed = 160.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float JogSpeed = 360.0f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float SprintSpeed = 750.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bIsIronsight = false;
 
 };

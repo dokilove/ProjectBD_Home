@@ -26,4 +26,6 @@ public:
 		bool bIsCrouch;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
 		float Pitch;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Info")
+		bool bIsIronsight;
 };

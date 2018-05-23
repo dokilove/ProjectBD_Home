@@ -55,7 +55,9 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
 }
 
 // Called every frame
@@ -80,6 +82,19 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::Turn);
 	PlayerInputComponent->BindAction(TEXT("Crouch"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryCrouch);
+	PlayerInputComponent->BindAction(TEXT("Ironsight"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryIronsight);
+	PlayerInputComponent->BindAction(TEXT("Prone"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::TryProne);
+
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::Sprint);
+	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this,
+		&AMyCharacter::UnSprint);
+	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::LookAround);
+	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Released, this,
+		&AMyCharacter::LookForward);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -121,6 +136,52 @@ void AMyCharacter::TryCrouch()
 	{
 		UnCrouch();
 	}
+}
+
+void AMyCharacter::TryIronsight()
+{
+	if (!bIsIronsight)
+	{
+		SetIronsight();
+	}
+	else
+	{
+		ReleaseIronsight();
+	}
+}
+
+void AMyCharacter::SetIronsight()
+{
+	bIsIronsight = true;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed / 2;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed / 2;
+}
+
+void AMyCharacter::ReleaseIronsight()
+{
+	bIsIronsight = false;
+	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
+	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
+}
+
+void AMyCharacter::TryProne()
+{
+}
+
+void AMyCharacter::Sprint()
+{
+}
+
+void AMyCharacter::UnSprint()
+{
+}
+
+void AMyCharacter::LookAround()
+{
+}
+
+void AMyCharacter::LookForward()
+{
 }
 
 FRotator AMyCharacter::GetAimoffset() const
