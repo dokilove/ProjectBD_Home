@@ -23,8 +23,11 @@ AMyCharacter::AMyCharacter()
 
 	bUseControllerRotationPitch = false;
 	SpringArm->bUsePawnControlRotation = true;
-	SpringArm->SocketOffset = FVector(0, 50, 70);
+	SpringArm->SetRelativeLocation(FVector(0, 50, 70));
 	SpringArm->TargetArmLength = 180.0f;
+	NormalSpringArmPosition = SpringArm->GetRelativeTransform().GetLocation();
+	CrouchSpringArmPosition = FVector(NormalSpringArmPosition.X, NormalSpringArmPosition.Y, NormalSpringArmPosition.Z - 40);
+	ProneSpringArmPosition = FVector(130, NormalSpringArmPosition.Y, NormalSpringArmPosition.Z - 100);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_Male(TEXT("SkeletalMesh'/Game/Male_Grunt/Mesh/male_grunt.male_grunt'"));
 	if (SK_Male.Succeeded())

@@ -3,7 +3,7 @@
 #include "MyCameraManager.h"
 #include "Player/MyCharacter.h"
 #include "GameFramework/PlayerController.h"
-#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 
 AMyCameraManager::AMyCameraManager()
@@ -18,24 +18,38 @@ void AMyCameraManager::BeginPlay()
 	AMyCharacter* Pawn = PCOwner ? Cast<AMyCharacter>(PCOwner->GetPawn()) : nullptr;
 	if (Pawn)
 	{
-		DefaultCameraZ = Pawn->Camera->GetRelativeTransform().GetLocation().Z;
+		DefaultFOV = Pawn->bIsIronsight ? IronsightFOV : NormalFOV;
+		SpringArmOffset = Pawn->SpringArm->GetRelativeTransform().GetLocation();
 	}
 }
 
 void AMyCameraManager::UpdateCamera(float DeltaTime)
 {
+	FVector TargetOffset;
+	float TargetFOV = 0.0f;
 	Super::UpdateCamera(DeltaTime);
 
 	AMyCharacter* Pawn = PCOwner ? Cast<AMyCharacter>(PCOwner->GetPawn()) : nullptr;
 	if (Pawn)
 	{
-		float TargetOffset = Pawn->bIsCrouched ? Pawn->CrouchedEyeHeight : 0;
-		CrouchOffset = FMath::FInterpTo(CrouchOffset, TargetOffset, DeltaTime, 5.0f);
+		TargetFOV = Pawn->bIsIronsight ? IronsightFOV : NormalFOV;
+		DefaultFOV = FMath::FInterpTo(DefaultFOV, TargetFOV, DeltaTime, 10.0f);
+		SetFOV(DefaultFOV);
 
-		FVector CameraLocation = Pawn->Camera->GetRelativeTransform().GetLocation();
-		FVector NewCameraLocation = FVector(CameraLocation.X, CameraLocation.Y,
-			DefaultCameraZ - CrouchOffset);
+		if (Pawn->bIsProne)
+		{
+			TargetOffset = Pawn->ProneSpringArmPosition;
+		}
+		else if (Pawn->bIsCrouched)
+		{
+			TargetOffset = Pawn->CrouchSpringArmPosition;
+		}
+		else
+		{
+			TargetOffset = Pawn->NormalSpringArmPosition;
+		}
 
-		Pawn->Camera->SetRelativeLocation(NewCameraLocation);
+		SpringArmOffset = FMath::VInterpTo(SpringArmOffset, TargetOffset, DeltaTime, 5.0f);
+		Pawn->SpringArm->SetRelativeLocation(SpringArmOffset);
 	}
 }

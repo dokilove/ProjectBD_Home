@@ -81,5 +81,13 @@ public:
 		bool bIsProning = false;
 
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FVector NormalSpringArmPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FVector CrouchSpringArmPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		FVector ProneSpringArmPosition;
+
+
 	FRotator ControllerRotataion;
 };

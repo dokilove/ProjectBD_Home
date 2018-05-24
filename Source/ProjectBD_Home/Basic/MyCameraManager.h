@@ -20,6 +20,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void UpdateCamera(float DeltaTime) override;
 
-	float CrouchOffset;
-	float DefaultCameraZ;
+	FVector SpringArmOffset;
+
+	float DefaultFOV;
+	float NormalFOV = 90.0f;
+	float IronsightFOV = 60.0f;
 };
