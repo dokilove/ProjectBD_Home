@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -231,12 +232,15 @@ void AMyCharacter::LookAround()
 	if (!bIsIronsight)
 	{
 		bUseControllerRotationYaw = false;
+		ControllerRotataion = GetController()->GetControlRotation();
+		//UE_LOG(LogClass, Warning, TEXT("Rotation %s"), *(ControllerRotataion.ToString()));
 	}
 }
 
 void AMyCharacter::LookForward()
 {
 	bUseControllerRotationYaw = true;
+	GetController()->SetControlRotation(ControllerRotataion);
 }
 
 FRotator AMyCharacter::GetAimoffset() const

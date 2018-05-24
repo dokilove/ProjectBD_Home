@@ -80,4 +80,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bIsProning = false;
 
+
+	FRotator ControllerRotataion;
 };
