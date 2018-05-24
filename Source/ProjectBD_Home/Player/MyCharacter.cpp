@@ -13,6 +13,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/RifleCameraShake.h"
 #include "Player/BulletDamageType.h"
+#include "Particles/ParticleSystem.h"
+#include "Sound/SoundBase.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -52,6 +54,23 @@ AMyCharacter::AMyCharacter()
 	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_MuzzleFireEffect(TEXT("ParticleSystem'/Game/Effects/P_AssaultRifle_MF.P_AssaultRifle_MF'"));
+	if (P_MuzzleFireEffect.Succeeded())
+	{
+		MuzzleFireEffect = P_MuzzleFireEffect.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HitEffect(TEXT("ParticleSystem'/Game/Effects/P_AssaultRifle_IH.P_AssaultRifle_IH'"));
+	if (P_HitEffect.Succeeded())
+	{
+		HitEffect = P_HitEffect.Object;
+	}
+	static ConstructorHelpers::FObjectFinder<USoundBase> S_FireSound(TEXT("SoundCue'/Game/Sound/Weapons/SMG_Thompson/Cue_Thompson_Shot.Cue_Thompson_Shot'"));
+	if (S_FireSound.Succeeded())
+	{
+		FireSound = S_FireSound.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -298,12 +317,29 @@ void AMyCharacter::OnShot()
 
 	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), StartTrace, EndTrace,
 		ObjectTypes, false,
-		ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit,
+		ActorsToIgnore, EDrawDebugTrace::None, OutHit,
 		true, FLinearColor::Blue, FLinearColor::Black, 5.0f);
+
+	FTransform MuzzleTransform = Weapon->GetSocketTransform(TEXT("MuzzleFlash"));
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), MuzzleFireEffect, MuzzleTransform);
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, MuzzleTransform.GetLocation(),
+		MuzzleTransform.GetRotation().Rotator());
 
 	if (Result)
 	{
+		StartTrace = MuzzleTransform.GetLocation();
+		EndTrace = StartTrace + (OutHit.Location - StartTrace) * 2.0f;
 
+		bool Hit = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), StartTrace, EndTrace,
+			ObjectTypes, false,
+			ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit,
+			true, FLinearColor::Green, FLinearColor::Red, 5.0f);
+		if (Hit)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
+				OutHit.ImpactNormal.Rotation());
+		}
 	}
 
 	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());

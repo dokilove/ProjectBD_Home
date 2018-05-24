@@ -96,5 +96,12 @@ public:
 		FVector ProneSpringArmPosition;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystem* MuzzleFireEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class UParticleSystem* HitEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect")
+		class USoundBase* FireSound;
+
 	FRotator ControllerRotataion;
 };
