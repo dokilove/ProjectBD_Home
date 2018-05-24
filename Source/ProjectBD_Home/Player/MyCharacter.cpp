@@ -15,6 +15,7 @@
 #include "Player/BulletDamageType.h"
 #include "Particles/ParticleSystem.h"
 #include "Sound/SoundBase.h"
+#include "TimerManager.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -126,6 +127,12 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::StartFire);
 	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this,
 		&AMyCharacter::StopFire);
+}
+
+float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+{
+	UE_LOG(LogClass, Warning, TEXT("Damage %f"), Damage);
+	return 0.0f;
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -339,10 +346,22 @@ void AMyCharacter::OnShot()
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
 				OutHit.ImpactNormal.Rotation());
+
+			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 30.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0),
+				this, UBulletDamageType::StaticClass());
 		}
 	}
 
+	if (bIsFire)
+	{
+		GetWorldTimerManager().SetTimer(FireTimeHandle, this, &AMyCharacter::OnShot, 0.1f);
+	}
+
 	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
+	FRotator CurrentRotation = GetControlRotation();
+	CurrentRotation.Pitch += 1.0f;
+	CurrentRotation.Yaw += FMath::FRandRange(-0.05f, 0.05f);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetControlRotation(CurrentRotation);
 }
 
 FRotator AMyCharacter::GetAimoffset() const
