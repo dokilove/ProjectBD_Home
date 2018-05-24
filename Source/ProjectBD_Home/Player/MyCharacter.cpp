@@ -266,6 +266,46 @@ void AMyCharacter::StopFire()
 
 void AMyCharacter::OnShot()
 {
+	if (!bIsFire)
+	{
+		return;
+	}
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	int SizeX;
+	int SizeY;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetViewportSize(SizeX, SizeY);
+
+	FVector WorldLocation;
+	FVector WorldDirection;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->DeprojectScreenPositionToWorld(SizeX / 2, SizeY / 2,
+		WorldLocation, WorldDirection);
+
+	FVector StartTrace = CameraLocation;
+	FVector EndTrace = CameraLocation + (WorldDirection * 80000.0f);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	TArray<AActor*> ActorsToIgnore;
+	FHitResult OutHit;
+
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	ActorsToIgnore.Add(this);
+
+	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), StartTrace, EndTrace,
+		ObjectTypes, false,
+		ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit,
+		true, FLinearColor::Blue, FLinearColor::Black, 5.0f);
+
+	if (Result)
+	{
+
+	}
+
 	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
 }
 
