@@ -9,6 +9,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Player/WeaponComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Player/RifleCameraShake.h"
+#include "Player/BulletDamageType.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -44,13 +48,8 @@ AMyCharacter::AMyCharacter()
 		GetMesh()->SetAnimInstanceClass(Anim_Male_Class);
 	}
 
-	Weapon = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Weapon"));
+	Weapon = CreateDefaultSubobject<UWeaponComponent>(TEXT("Weapon"));
 	Weapon->SetupAttachment(GetMesh(), TEXT("RHandWeapon"));
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_Weapon(TEXT("StaticMesh'/Game/Weapons/M4A1/SM_M4A1.SM_M4A1'"));
-	if (SM_Weapon.Succeeded())
-	{
-		Weapon->SetStaticMesh(SM_Weapon.Object);
-	}
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
@@ -103,6 +102,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::LookAround);
 	PlayerInputComponent->BindAction(TEXT("LookAround"), EInputEvent::IE_Released, this,
 		&AMyCharacter::LookForward);
+
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::StartFire);
+	PlayerInputComponent->BindAction(TEXT("Fire"), EInputEvent::IE_Released, this,
+		&AMyCharacter::StopFire);
 }
 
 void AMyCharacter::MoveForward(float Value)
@@ -244,6 +248,25 @@ void AMyCharacter::LookForward()
 {
 	bUseControllerRotationYaw = true;
 	GetController()->SetControlRotation(ControllerRotataion);
+}
+
+void AMyCharacter::StartFire()
+{
+	if (!bIsSprint && !bIsProning)
+	{
+		bIsFire = true;
+		OnShot();
+	}
+}
+
+void AMyCharacter::StopFire()
+{
+	bIsFire = false;
+}
+
+void AMyCharacter::OnShot()
+{
+	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->PlayCameraShake(URifleCameraShake::StaticClass());
 }
 
 FRotator AMyCharacter::GetAimoffset() const

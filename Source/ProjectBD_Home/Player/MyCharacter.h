@@ -52,6 +52,11 @@ public:
 		void LookAround();
 	UFUNCTION()
 		void LookForward();
+	UFUNCTION()
+		void StartFire();
+	UFUNCTION()
+		void StopFire();
+	void OnShot();
 	
 	FRotator GetAimoffset() const;
 	
@@ -60,7 +65,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UCameraComponent* Camera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UStaticMeshComponent* Weapon;
+		class UWeaponComponent* Weapon;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float ProneSpeed = 50.0f;
@@ -79,6 +84,8 @@ public:
 		bool bIsProne = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bIsProning = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		bool bIsFire = false;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
