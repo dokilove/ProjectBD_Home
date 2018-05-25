@@ -16,6 +16,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Sound/SoundBase.h"
 #include "TimerManager.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -81,6 +82,8 @@ void AMyCharacter::BeginPlay()
 
 	GetCharacterMovement()->MaxWalkSpeed = JogSpeed;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
+
+	CurrentHP = MaxHP;
 }
 
 // Called every frame
@@ -158,6 +161,16 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, A
 	{
 		UE_LOG(LogClass, Warning, TEXT("Damage %f"), Damage);
 	}
+
+	CurrentHP -= Damage;
+	if (CurrentHP <= 0.0f)
+	{
+		CurrentHP = 0;
+
+		GetMesh()->SetSimulatePhysics(true);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
 	return 0.0f;
 }
 

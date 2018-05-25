@@ -109,4 +109,9 @@ public:
 	FTimerHandle FireTimeHandle;
 
 	FRotator ControllerRotataion;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float CurrentHP;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float MaxHP = 100.0f;
 };
