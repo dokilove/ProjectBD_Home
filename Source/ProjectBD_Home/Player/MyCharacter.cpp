@@ -131,7 +131,33 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
-	UE_LOG(LogClass, Warning, TEXT("Damage %f"), Damage);
+	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+	{
+		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
+
+		for (int32 i = 0; i < RadialDamageEvent->ComponentHits.Num(); ++i)
+		{
+			//UE_LOG(LogClass, Warning, TEXT("location %s, Origin %s"), *RadialDamageEvent->ComponentHits[i].Location.ToString(), *RadialDamageEvent->Origin.ToString());
+			float distance = FVector::Distance(RadialDamageEvent->ComponentHits[i].Location , RadialDamageEvent->Origin);
+			float scale = RadialDamageEvent->Params.GetDamageScale(distance);
+			//UE_LOG(LogClass, Warning, TEXT("ComponentHits %d %f %f %s"), i, distance, scale, *RadialDamageEvent->ComponentHits[i].GetActor()->GetName());
+			Damage *= scale;
+		}
+
+
+		UE_LOG(LogClass, Warning, TEXT("FRadialDamageEvent %f"), Damage);
+	}
+	else if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+	{
+		FPointDamageEvent* PointDamageEvent = (FPointDamageEvent*)&DamageEvent;
+
+		UE_LOG(LogClass, Warning, TEXT("FPointDamageEvent %f %s"), Damage, *PointDamageEvent->HitInfo.BoneName.ToString());
+
+	}
+	else if (DamageEvent.IsOfType(FDamageEvent::ClassID))
+	{
+		UE_LOG(LogClass, Warning, TEXT("Damage %f"), Damage);
+	}
 	return 0.0f;
 }
 
@@ -323,7 +349,7 @@ void AMyCharacter::OnShot()
 
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
 	ActorsToIgnore.Add(this);
 
 	bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), StartTrace, EndTrace,
@@ -341,18 +367,24 @@ void AMyCharacter::OnShot()
 	{
 		StartTrace = MuzzleTransform.GetLocation();
 		EndTrace = StartTrace + (OutHit.Location - StartTrace) * 2.0f;
-
+		FHitResult OutHitResult;
 		bool Hit = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), StartTrace, EndTrace,
 			ObjectTypes, false,
-			ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit,
+			ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHitResult,
 			true, FLinearColor::Green, FLinearColor::Red, 5.0f);
 		if (Hit)
 		{
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitEffect, OutHit.Location,
 				OutHit.ImpactNormal.Rotation());
-
-			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 30.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0),
+			
+			UGameplayStatics::ApplyDamage(OutHit.GetActor(), 0.0f, UGameplayStatics::GetPlayerController(GetWorld(), 0),
 				this, UBulletDamageType::StaticClass());
+
+			//UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
+
+			//UGameplayStatics::ApplyRadialDamageWithFalloff(GetWorld(), 300.0f, 10.0f, OutHitResult.ImpactPoint,				20.0f, 300.0f, 1.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+			UGameplayStatics::ApplyPointDamage(OutHitResult.GetActor(), 30.0f, EndTrace - StartTrace, OutHitResult, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 		}
 	}
 

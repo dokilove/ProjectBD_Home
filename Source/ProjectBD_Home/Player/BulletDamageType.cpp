@@ -3,5 +3,7 @@
 #include "BulletDamageType.h"
 
 
-
+UBulletDamageType::UBulletDamageType()
+{
+}
 

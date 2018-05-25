@@ -14,7 +14,8 @@ class PROJECTBD_HOME_API UBulletDamageType : public UDamageType
 {
 	GENERATED_BODY()
 	
-	
+public:
+	UBulletDamageType();
 	
 	
 };
