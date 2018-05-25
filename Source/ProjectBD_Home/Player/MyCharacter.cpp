@@ -166,7 +166,7 @@ void AMyCharacter::Turn(float Value)
 
 void AMyCharacter::TryCrouch()
 {
-	if (bIsProne)
+	if (bIsProning)
 	{
 		return;
 	}
@@ -174,6 +174,10 @@ void AMyCharacter::TryCrouch()
 	if (CanCrouch())
 	{
 		Crouch();
+		if (bIsProne)
+		{
+			EndProne();
+		}
 	}
 	else
 	{
@@ -183,7 +187,7 @@ void AMyCharacter::TryCrouch()
 
 void AMyCharacter::TryIronsight()
 {
-	if (bIsProne)
+	if (bIsProning)
 	{
 		return;
 	}
@@ -247,7 +251,7 @@ void AMyCharacter::EndProne()
 
 void AMyCharacter::Sprint()
 {
-	if (!bIsCrouched && !bIsIronsight)
+	if (!bIsCrouched && !bIsIronsight && !bIsFire)
 	{
 		bIsSprint = true;
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
