@@ -138,8 +138,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::StopFire);
 }
 
-float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
+float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	// RadialDamage를 적용시키기 위해서는 부모함수에서 실행시켜서 계산된 대미지를 가져와야한다
+	float Damage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	if (CurrentHP <= 0.0f)
 	{
 		return 0.0f;
@@ -149,14 +151,14 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, A
 	{
 		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
 
-		for (int32 i = 0; i < RadialDamageEvent->ComponentHits.Num(); ++i)
-		{
-			//UE_LOG(LogClass, Warning, TEXT("location %s, Origin %s"), *RadialDamageEvent->ComponentHits[i].Location.ToString(), *RadialDamageEvent->Origin.ToString());
-			float distance = FVector::Distance(RadialDamageEvent->ComponentHits[i].Location , RadialDamageEvent->Origin);
-			float scale = RadialDamageEvent->Params.GetDamageScale(distance);
-			//UE_LOG(LogClass, Warning, TEXT("ComponentHits %d %f %f %s"), i, distance, scale, *RadialDamageEvent->ComponentHits[i].GetActor()->GetName());
-			Damage *= scale;
-		}
+		//for (int32 i = 0; i < RadialDamageEvent->ComponentHits.Num(); ++i)
+		//{
+		//	//UE_LOG(LogClass, Warning, TEXT("location %s, Origin %s"), *RadialDamageEvent->ComponentHits[i].Location.ToString(), *RadialDamageEvent->Origin.ToString());
+		//	float distance = FVector::Distance(RadialDamageEvent->ComponentHits[i].Location , RadialDamageEvent->Origin);
+		//	float scale = RadialDamageEvent->Params.GetDamageScale(distance);
+		//	//UE_LOG(LogClass, Warning, TEXT("ComponentHits %d %f %f %s"), i, distance, scale, *RadialDamageEvent->ComponentHits[i].GetActor()->GetName());
+		//	Damage *= scale;
+		//}
 
 
 		UE_LOG(LogClass, Warning, TEXT("FRadialDamageEvent %f"), Damage);
@@ -411,9 +413,9 @@ void AMyCharacter::OnShot()
 
 			//UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
 
-			//UGameplayStatics::ApplyRadialDamageWithFalloff(GetWorld(), 300.0f, 10.0f, OutHitResult.ImpactPoint,				20.0f, 300.0f, 1.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			UGameplayStatics::ApplyRadialDamageWithFalloff(GetWorld(), 300.0f, 10.0f, OutHitResult.ImpactPoint,				20.0f, 300.0f, 1.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-			UGameplayStatics::ApplyPointDamage(OutHitResult.GetActor(), 30.0f, EndTrace - StartTrace, OutHitResult, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
+			//UGameplayStatics::ApplyPointDamage(OutHitResult.GetActor(), 30.0f, EndTrace - StartTrace, OutHitResult, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 		}
 	}
 
