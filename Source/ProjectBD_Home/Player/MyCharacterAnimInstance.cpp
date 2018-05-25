@@ -21,6 +21,7 @@ void UMyCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsSprint = Pawn->bIsSprint;
 		bIsProne = Pawn->bIsProne;
 		bIsProning = Pawn->bIsProning;
+		bIsFire = Pawn->bIsFire;
 	}
 }
 
