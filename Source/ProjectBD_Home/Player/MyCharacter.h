@@ -114,4 +114,8 @@ public:
 		float CurrentHP;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float MaxHP = 100.0f;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		UAnimMontage* DeadAnimation;
 };

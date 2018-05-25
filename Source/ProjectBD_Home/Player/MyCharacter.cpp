@@ -17,6 +17,8 @@
 #include "Sound/SoundBase.h"
 #include "TimerManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Animation/AnimMontage.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -72,7 +74,11 @@ AMyCharacter::AMyCharacter()
 	{
 		FireSound = S_FireSound.Object;
 	}
-
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Anim_Dead(TEXT("AnimMontage'/Game/Male_Grunt/Animations/AnimMontage/Death_1_Montage.Death_1_Montage'"));
+	if (Anim_Dead.Succeeded())
+	{
+		DeadAnimation = Anim_Dead.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -134,6 +140,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, AController * EventInstigator, AActor * DamageCauser)
 {
+	if (CurrentHP <= 0.0f)
+	{
+		return 0.0f;
+	}
+
 	if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
 	{
 		FRadialDamageEvent* RadialDamageEvent = (FRadialDamageEvent*)&DamageEvent;
@@ -167,8 +178,13 @@ float AMyCharacter::TakeDamage(float Damage, FDamageEvent const & DamageEvent, A
 	{
 		CurrentHP = 0;
 
-		GetMesh()->SetSimulatePhysics(true);
+		//GetMesh()->SetSimulatePhysics(true);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeadAnimation))
+		{
+			PlayAnimMontage(DeadAnimation);
+		}
 	}
 
 	return 0.0f;
