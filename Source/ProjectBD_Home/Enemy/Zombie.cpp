@@ -4,6 +4,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Enemy/ZombieAIController.h"
 
 
 // Sets default values
@@ -27,6 +29,13 @@ AZombie::AZombie()
 	if (UClass* AnimClass = AnimRef.TryLoadClass<UAnimInstance>())
 	{
 		GetMesh()->SetAnimInstanceClass(AnimClass);
+	}
+
+	AIControllerClass = AZombieAIController::StaticClass();
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BT_Zombie(TEXT("BehaviorTree'/Game/Blueprints/AI/BT_Zombie.BT_Zombie'"));
+	if (BT_Zombie.Succeeded())
+	{
+		BehaviorTree = BT_Zombie.Object;
 	}
 
 	CurrentState = EZombieState::Normal;

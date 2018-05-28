@@ -57,4 +57,7 @@ public:
 		float CurrentHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MaxHP = 100.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UBehaviorTree* BehaviorTree;
 };
