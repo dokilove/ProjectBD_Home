@@ -413,9 +413,9 @@ void AMyCharacter::OnShot()
 
 			//UGameplayStatics::ApplyRadialDamage(GetWorld(), 0.0f, OutHit.ImpactPoint, 300.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0), false);
 
-			UGameplayStatics::ApplyRadialDamageWithFalloff(GetWorld(), 300.0f, 10.0f, OutHitResult.ImpactPoint,				20.0f, 300.0f, 1.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			//UGameplayStatics::ApplyRadialDamageWithFalloff(GetWorld(), 300.0f, 10.0f, OutHitResult.ImpactPoint,				20.0f, 300.0f, 1.0f, UBulletDamageType::StaticClass(), ActorsToIgnore, this, UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
-			//UGameplayStatics::ApplyPointDamage(OutHitResult.GetActor(), 30.0f, EndTrace - StartTrace, OutHitResult, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
+			UGameplayStatics::ApplyPointDamage(OutHitResult.GetActor(), 30.0f, EndTrace - StartTrace, OutHitResult, UGameplayStatics::GetPlayerController(GetWorld(), 0), this, UBulletDamageType::StaticClass());
 		}
 	}
 
