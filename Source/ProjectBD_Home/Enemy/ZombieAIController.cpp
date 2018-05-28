@@ -14,6 +14,7 @@ AZombieAIController::AZombieAIController()
 
 void AZombieAIController::Possess(APawn * InPawn)
 {
+	Super::Possess(InPawn);
 	AZombie* Zombie = Cast<AZombie>(InPawn);
 	if (Zombie && Zombie->IsValidLowLevelFast())
 	{
