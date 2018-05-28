@@ -80,7 +80,7 @@ float AZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, 
 		CurrentHP = 0;
 		CurrentState = EZombieState::Dead;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		GetMesh()->SetSimulatePhysics(true);
+		//GetMesh()->SetSimulatePhysics(true);
 	}
 
 	return 0.0f;
