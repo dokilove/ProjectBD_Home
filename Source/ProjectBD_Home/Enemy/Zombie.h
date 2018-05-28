@@ -60,4 +60,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBehaviorTree* BehaviorTree;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<class APatrolPoint*> PatrolPoints;
 };

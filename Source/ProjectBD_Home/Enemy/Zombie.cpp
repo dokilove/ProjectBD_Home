@@ -6,6 +6,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Enemy/ZombieAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "Enemy/PatrolPoint.h"
 
 
 // Sets default values
@@ -48,6 +50,13 @@ void AZombie::BeginPlay()
 	Super::BeginPlay();
 	
 	CurrentHP = MaxHP;
+
+	TArray<AActor*> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APatrolPoint::StaticClass(), OutActors);
+	for (int i = 0; i < OutActors.Num(); ++i)
+	{
+		PatrolPoints.Add(Cast<APatrolPoint>(OutActors[i]));
+	}
 }
 
 // Called every frame
