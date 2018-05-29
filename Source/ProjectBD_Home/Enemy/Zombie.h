@@ -57,6 +57,12 @@ public:
 		float CurrentHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MaxHP = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float WalkSpeed = 50.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float RunSpeed = 200.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float AttackRange = 100.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBehaviorTree* BehaviorTree;
