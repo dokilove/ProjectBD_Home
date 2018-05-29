@@ -8,7 +8,9 @@
 #include "Enemy/ZombieAIController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Enemy/PatrolPoint.h"
-
+#include "Perception/PawnSensingComponent.h"
+#include "Player/MyCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Sets default values
 AZombie::AZombie()
@@ -42,6 +44,10 @@ AZombie::AZombie()
 
 	CurrentState = EZombieState::Normal;
 	CurrentAnimState = EZombieAnimState::Idle;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 1300.0f;
+	PawnSensing->SetPeripheralVisionAngle(60.0f);
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +63,9 @@ void AZombie::BeginPlay()
 	{
 		PatrolPoints.Add(Cast<APatrolPoint>(OutActors[i]));
 	}
+
+	PawnSensing->OnSeePawn.AddDynamic(this, &AZombie::OnSeePawn);
+	PawnSensing->OnHearNoise.AddDynamic(this, &AZombie::OnHearNoise);
 }
 
 // Called every frame
@@ -96,11 +105,37 @@ float AZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, 
 	if (CurrentHP <= 0.0f)
 	{
 		CurrentHP = 0;
-		CurrentState = EZombieState::Dead;
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//GetMesh()->SetSimulatePhysics(true);
+		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+		if (AIC && AIC->IsValidLowLevelFast())
+		{
+			CurrentState = EZombieState::Dead;
+
+			AIC->BBComponent->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
+		}
 	}
 
 	return 0.0f;
 }
 
+void AZombie::OnSeePawn(APawn* Pawn)
+{
+	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
+	if (Player && Player->IsValidLowLevelFast())
+	{
+		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+		if (AIC && AIC->IsValidLowLevelFast())
+		{
+			CurrentState = EZombieState::Chase;
+
+			AIC->BBComponent->SetValueAsObject(FName(TEXT("Target")), Player);
+			AIC->BBComponent->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
+		}
+	}
+}
+
+void AZombie::OnHearNoise(APawn* Pawn, const FVector& Location, float Volume)
+{
+
+}

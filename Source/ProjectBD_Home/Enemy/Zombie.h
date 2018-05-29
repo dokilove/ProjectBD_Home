@@ -48,6 +48,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	UFUNCTION()
+	void OnSeePawn(APawn * Pawn);
+	UFUNCTION()
+	void OnHearNoise(APawn * Pawn, const FVector & Location, float Volume);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EZombieState CurrentState;
@@ -70,4 +74,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<class APatrolPoint*> PatrolPoints;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UPawnSensingComponent* PawnSensing;
 };
