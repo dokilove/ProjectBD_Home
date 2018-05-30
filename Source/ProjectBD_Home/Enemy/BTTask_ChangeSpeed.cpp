@@ -12,6 +12,7 @@ EBTNodeResult::Type UBTTask_ChangeSpeed::ExecuteTask(UBehaviorTreeComponent & Ow
 	AZombie* Zombie = Cast<AZombie>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Zombie && Zombie->IsValidLowLevelFast())
 	{
+
 		switch (Zombie->CurrentState)
 		{
 		case EZombieState::Normal:

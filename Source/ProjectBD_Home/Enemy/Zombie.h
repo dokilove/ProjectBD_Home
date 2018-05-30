@@ -66,7 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float RunSpeed = 200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AttackRange = 100.0f;
+		float AttackRange = 150.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBehaviorTree* BehaviorTree;

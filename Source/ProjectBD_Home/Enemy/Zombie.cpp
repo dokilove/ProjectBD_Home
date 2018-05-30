@@ -122,7 +122,7 @@ float AZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, 
 void AZombie::OnSeePawn(APawn* Pawn)
 {
 	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
-	if (Player && Player->IsValidLowLevelFast())
+	if (Player && Player->IsValidLowLevelFast() && CurrentState == EZombieState::Normal)
 	{
 		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
 		if (AIC && AIC->IsValidLowLevelFast())

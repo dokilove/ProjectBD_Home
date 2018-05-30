@@ -8,7 +8,7 @@
 void UAnimNotifyState_ZombieWalk::NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration)
 {
 	AZombie* Zombie = Cast<AZombie>(MeshComp->GetOwner());
-	if (Zombie && Zombie->IsValidLowLevelFast())
+	if (Zombie && Zombie->IsValidLowLevelFast() && Zombie->CurrentState == EZombieState::Normal)
 	{
 		Zombie->GetCharacterMovement()->MaxWalkSpeed = Zombie->WalkSpeed;
 	}
@@ -17,7 +17,7 @@ void UAnimNotifyState_ZombieWalk::NotifyBegin(USkeletalMeshComponent * MeshComp,
 void UAnimNotifyState_ZombieWalk::NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation)
 {
 	AZombie* Zombie = Cast<AZombie>(MeshComp->GetOwner());
-	if (Zombie && Zombie->IsValidLowLevelFast())
+	if (Zombie && Zombie->IsValidLowLevelFast() && Zombie->CurrentState == EZombieState::Normal)
 	{
 		Zombie->GetCharacterMovement()->MaxWalkSpeed = 3.0f;
 	}
