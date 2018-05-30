@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "Enemy/Zombie.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory, float DeltaSeconds)
 {
@@ -32,6 +33,31 @@ void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 *
 					{
 						Zombie->CurrentState = EZombieState::Normal;
 						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+					}
+					else
+					{
+						FVector TraceStart = Zombie->GetActorLocation();
+						FVector TraceEnd = Player->GetActorLocation();
+
+						TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes;
+						TArray<AActor*> ActorsToIgnore;
+						FHitResult OutHit;
+
+						ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic));
+						ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
+						ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+						ActorsToIgnore.Add(Zombie);
+
+						bool Result = UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), TraceStart, TraceEnd, ObjectTypes, false, ActorsToIgnore, EDrawDebugTrace::ForDuration, OutHit, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+						if (Result)
+						{
+							if (!OutHit.GetActor()->ActorHasTag(FName("Player")))
+							{
+								Zombie->CurrentState = EZombieState::Normal;
+								OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+							}
+						}
 					}
 				}
 				break;
