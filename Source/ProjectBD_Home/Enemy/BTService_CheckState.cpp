@@ -7,6 +7,7 @@
 #include "Enemy/Zombie.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Player/MyCharacter.h"
 
 void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 * NodeMemory, float DeltaSeconds)
 {
@@ -15,7 +16,7 @@ void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 *
 	AZombie* Zombie = Cast<AZombie>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Zombie && Zombie->IsValidLowLevelFast())
 	{
-		AActor* Player = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
+		AMyCharacter* Player = Cast<AMyCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName(TEXT("Target"))));
 		if (Player && Player->IsValidLowLevelFast())
 		{
 			float Range = FVector::Distance(Zombie->GetActorLocation(), Player->GetActorLocation());
@@ -64,7 +65,15 @@ void UBTService_CheckState::TickNode(UBehaviorTreeComponent & OwnerComp, uint8 *
 
 			case EZombieState::Battle:
 				{
-					if (Range > Zombie->PawnSensing->SightRadius)
+					FVector Dir = Player->GetActorLocation() - Zombie->GetActorLocation();
+					Zombie->SetActorRotation(Dir.Rotation());
+
+					if (Range > Zombie->AttackRange)
+					{
+						Zombie->CurrentState = EZombieState::Chase;
+						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);
+					}
+					else if (Player->CurrentHP <= 0.0f || Range > Zombie->PawnSensing->SightRadius)
 					{
 						Zombie->CurrentState = EZombieState::Normal;
 						OwnerComp.GetBlackboardComponent()->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)Zombie->CurrentState);

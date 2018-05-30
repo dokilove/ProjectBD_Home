@@ -67,6 +67,8 @@ public:
 		float RunSpeed = 200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float AttackRange = 150.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float AttackDamage = 30.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UBehaviorTree* BehaviorTree;
@@ -77,4 +79,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UPawnSensingComponent* PawnSensing;
+
+	void OnAttack();
 };

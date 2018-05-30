@@ -184,6 +184,7 @@ float AMyCharacter::TakeDamage(float DamageAmount, FDamageEvent const & DamageEv
 
 		//GetMesh()->SetSimulatePhysics(true);
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		DisableInput(Cast<APlayerController>(GetController()));
 
 		if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeadAnimation))
 		{

@@ -14,3 +14,12 @@ void UZombieAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		CurrentAnimState = Zombie->CurrentAnimState;
 	}
 }
+
+void UZombieAnimInstance::AnimNotify_OnAttack()
+{
+	AZombie* Zombie = Cast<AZombie>(TryGetPawnOwner());
+	if (Zombie && Zombie->IsValidLowLevelFast())
+	{
+		Zombie->OnAttack();
+	}
+}

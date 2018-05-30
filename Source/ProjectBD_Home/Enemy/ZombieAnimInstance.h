@@ -22,4 +22,7 @@ public:
 		EZombieState CurrentState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EZombieAnimState CurrentAnimState;
+
+	UFUNCTION()
+		void AnimNotify_OnAttack();
 };

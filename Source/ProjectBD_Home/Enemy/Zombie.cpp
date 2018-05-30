@@ -122,7 +122,7 @@ float AZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, 
 void AZombie::OnSeePawn(APawn* Pawn)
 {
 	AMyCharacter* Player = Cast<AMyCharacter>(Pawn);
-	if (Player && Player->IsValidLowLevelFast() && CurrentState == EZombieState::Normal)
+	if (Player && Player->IsValidLowLevelFast() && CurrentState == EZombieState::Normal && Player->CurrentHP > 0.0f)
 	{
 		AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
 		if (AIC && AIC->IsValidLowLevelFast())
@@ -138,4 +138,17 @@ void AZombie::OnSeePawn(APawn* Pawn)
 void AZombie::OnHearNoise(APawn* Pawn, const FVector& Location, float Volume)
 {
 
+}
+
+void AZombie::OnAttack()
+{
+	AZombieAIController* AIC = Cast<AZombieAIController>(GetController());
+	if (AIC && AIC->IsValidLowLevelFast())
+	{
+		AActor* Player = Cast<AActor>(AIC->BBComponent->GetValueAsObject(FName(TEXT("Target"))));
+		if (Player && Player->IsValidLowLevelFast())
+		{
+			UGameplayStatics::ApplyDamage(Player, AttackDamage, AIC, this, nullptr);
+		}
+	}
 }
