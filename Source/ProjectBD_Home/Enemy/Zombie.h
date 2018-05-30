@@ -81,4 +81,8 @@ public:
 		class UPawnSensingComponent* PawnSensing;
 
 	void OnAttack();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UWidgetComponent* Widget;
+	
 };

@@ -11,6 +11,8 @@
 #include "Perception/PawnSensingComponent.h"
 #include "Player/MyCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Enemy/UI/ZombieHPBarWidgetBase.h"
 
 // Sets default values
 AZombie::AZombie()
@@ -48,6 +50,17 @@ AZombie::AZombie()
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
 	PawnSensing->SightRadius = 1300.0f;
 	PawnSensing->SetPeripheralVisionAngle(60.0f);
+
+	Widget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+	Widget->SetupAttachment(RootComponent);
+
+	FStringClassReference WidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/ZombieHPBarWidget.ZombieHPBarWidget_C'"));
+	if (UClass* WidgetClass = WidgetRef.TryLoadClass<UZombieHPBarWidgetBase>())
+	{
+		Widget->SetWidgetClass(WidgetClass);
+	}
+	Widget->SetRelativeLocation(FVector(0, 0, 120));
+	Widget->SetDrawSize(FVector2D(100, 30));
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +85,19 @@ void AZombie::BeginPlay()
 void AZombie::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+	FVector Dir = CameraLocation - Widget->GetComponentLocation();
+	Widget->SetWorldRotation(Dir.Rotation());
+
+	UZombieHPBarWidgetBase* HPBar = Cast<UZombieHPBarWidgetBase>(Widget->GetUserWidgetObject());
+	if (HPBar)
+	{
+		HPBar->HPRatio = CurrentHP / MaxHP;
+	}
 
 }
 
@@ -113,6 +139,8 @@ float AZombie::TakeDamage(float DamageAmount, FDamageEvent const & DamageEvent, 
 			CurrentState = EZombieState::Dead;
 
 			AIC->BBComponent->SetValueAsEnum(FName(TEXT("CurrentState")), (uint8)CurrentState);
+
+			Widget->SetVisibility(false);
 		}
 	}
 
