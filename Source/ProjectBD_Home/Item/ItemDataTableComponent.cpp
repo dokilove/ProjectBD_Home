@@ -41,6 +41,6 @@ void UItemDataTableComponent::TickComponent(float DeltaTime, ELevelTick TickType
 FItemDataTable & UItemDataTableComponent::GetItemData(int index)
 {
 	// TODO: insert return statement here
-	return *DataTable->FindRow<FItemDataTable>(*FString::FromInt(index), TEXT("ItemIdex"), true);
+	return *DataTable->FindRow<FItemDataTable>(*FString::FromInt(index), TEXT("ItemIndex"), true);
 }
 

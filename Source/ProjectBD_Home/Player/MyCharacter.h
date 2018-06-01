@@ -118,4 +118,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UAnimMontage* DeadAnimation;
+
+	TArray<class AMasterItem*> CanPickupItems;
+
+	void AddPickupItems(class AMasterItem* Item);
+	void RemovePickupItems(class AMasterItem* Item);
+	void ViewItemTooltip();
 };

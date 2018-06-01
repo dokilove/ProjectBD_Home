@@ -19,6 +19,11 @@
 #include "Components/CapsuleComponent.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimInstance.h"
+#include "Item/MasterItem.h"
+#include "Components/TextBlock.h"
+#include "UI/ItemTooltipWidgetBase.h"
+#include "Item/ItemDataTableComponent.h"
+#include "Basic/BasicPC.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -440,4 +445,51 @@ FRotator AMyCharacter::GetAimoffset() const
 	const FVector AimDirLS = ActorToWorld().InverseTransformVectorNoScale(AimDirWS);
 	const FRotator AimRot = AimDirLS.Rotation();
 	return AimRot;
+}
+
+void AMyCharacter::AddPickupItems(AMasterItem *Item)
+{
+	if (Item && !Item->IsPendingKill())
+	{
+		CanPickupItems.Add(Item);
+	}
+
+	ViewItemTooltip();
+}
+
+void AMyCharacter::RemovePickupItems(AMasterItem *Item)
+{
+	if (Item)
+	{
+		CanPickupItems.Remove(Item);
+	}
+	ViewItemTooltip();
+}
+
+void AMyCharacter::ViewItemTooltip()
+{
+	ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (!PC)
+	{
+		return;
+	}
+
+
+	if (CanPickupItems.Num() == 0)
+	{
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
+		return;
+	}
+
+	AMasterItem* ClosestItem = CanPickupItems[0];
+	if (ClosestItem)
+	{
+	//	UE_LOG(LogClass, Warning, TEXT("ItemName : %d"), ClosestItem->ItemIndex);
+		PC->ItemTooltip->ItemName->SetText(FText::FromString(ClosestItem->ItemDataTable->GetItemData(ClosestItem->ItemIndex).ItemName));
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }

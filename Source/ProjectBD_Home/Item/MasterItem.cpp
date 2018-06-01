@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StreamableManager.h"
 #include "Engine/AssetManager.h"
+#include "Player/MyCharacter.h"
 
 AMasterItem::AMasterItem()
 {
@@ -22,7 +23,7 @@ void AMasterItem::BeginPlay()
 {
 	if (ItemDataTable && ItemDataTable->DataTable)
 	{
-		int ItemIndex = FMath::RandRange(1, 6) * 10;
+		ItemIndex = FMath::RandRange(1, 6) * 10;
 		
 		//FStreamableManager& AssetLoader = UAssetManager::GetStreamableManager();
 		//GetStaticMeshComponent()->SetStaticMesh(AssetLoader.LoadSynchronous<UStaticMesh>(ItemDataTable->GetItemData(ItemIndex).ItemMesh));
@@ -39,10 +40,23 @@ void AMasterItem::BeginPlay()
 
 void AMasterItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	UE_LOG(LogClass, Warning, TEXT("OnBeginOverlap %s"), *this->GetName());
+	//UE_LOG(LogClass, Warning, TEXT("OnBeginOverlap %s"), *this->GetName());
+
+	AMyCharacter* Player = Cast<AMyCharacter>(OtherActor);
+	if (Player && Player->IsValidLowLevelFast())
+	{
+		Player->AddPickupItems(this);
+	}
+
 }
 void AMasterItem::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 
-	UE_LOG(LogClass, Warning, TEXT("OnEndOverlap %s"), *this->GetName());
+	//UE_LOG(LogClass, Warning, TEXT("OnEndOverlap %s"), *this->GetName());
+
+	AMyCharacter* Player = Cast<AMyCharacter>(OtherActor);
+	if (Player && Player->IsValidLowLevelFast())
+	{
+		Player->RemovePickupItems(this);
+	}
 }
