@@ -481,7 +481,7 @@ void AMyCharacter::ViewItemTooltip()
 		return;
 	}
 
-	AMasterItem* ClosestItem = CanPickupItems[0];
+	AMasterItem* ClosestItem = GetClosestItem();
 	if (ClosestItem)
 	{
 	//	UE_LOG(LogClass, Warning, TEXT("ItemName : %d"), ClosestItem->ItemIndex);
@@ -492,4 +492,22 @@ void AMyCharacter::ViewItemTooltip()
 	{
 		PC->ItemTooltip->SetVisibility(ESlateVisibility::Collapsed);
 	}
+}
+
+AMasterItem* AMyCharacter::GetClosestItem()
+{
+	AMasterItem* ClosestItem = nullptr;
+
+	float Min = 9999999999.9f;
+	for (auto Item : CanPickupItems)
+	{
+		float Distance = FVector::Dist(Item->GetActorLocation(), GetActorLocation());
+		if (Min > Distance)
+		{
+			Min = Distance;
+			ClosestItem = Item;
+		}
+	}
+
+	return ClosestItem;
 }
