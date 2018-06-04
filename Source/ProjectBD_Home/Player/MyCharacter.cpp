@@ -24,6 +24,8 @@
 #include "UI/ItemTooltipWidgetBase.h"
 #include "Item/ItemDataTableComponent.h"
 #include "Basic/BasicPC.h"
+#include "UI/InventoryWidgetBase.h"
+#include "UI/ItemSlotWidgetBase.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -129,6 +131,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		&AMyCharacter::TryIronsight);
 	PlayerInputComponent->BindAction(TEXT("Prone"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::TryProne);
+	PlayerInputComponent->BindAction(TEXT("Inventory"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::Inventory);
+	PlayerInputComponent->BindAction(TEXT("GetItem"), EInputEvent::IE_Pressed, this,
+		&AMyCharacter::GetItem);
 
 	PlayerInputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this,
 		&AMyCharacter::Sprint);
@@ -311,6 +317,44 @@ void AMyCharacter::EndProne()
 	else
 	{
 		ReleaseIronsight();
+	}
+}
+
+void AMyCharacter::Inventory()
+{
+	ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		PC->ToggleInventory();
+	}
+}
+
+void AMyCharacter::GetItem()
+{
+	AMasterItem* PickupItem = GetClosestItem();
+	if (PickupItem && !PickupItem->IsPendingKill())
+	{
+		ABasicPC* PC = Cast<ABasicPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (PC)
+		{
+			UItemSlotWidgetBase* Slot = PC->Inventory->GetSameIDSlot(PickupItem->ItemIndex);
+			if (Slot)
+			{
+				Slot->AddItemCount(PickupItem->ItemCount);
+				PickupItem->Destroy();
+				ViewItemTooltip();
+			}
+			else
+			{
+				UItemSlotWidgetBase* NewSlot = PC->Inventory->GetEmptySlot();
+				if (NewSlot)
+				{
+					NewSlot->SetItem(PickupItem->ItemIndex);
+					PickupItem->Destroy();
+					ViewItemTooltip();
+				}
+			}
+		}
 	}
 }
 

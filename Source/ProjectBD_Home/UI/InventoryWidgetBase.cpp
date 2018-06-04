@@ -35,7 +35,7 @@ UItemSlotWidgetBase * UInventoryWidgetBase::GetSameIDSlot(int ItemIndex)
 {
 	for (auto Slot : Slots)
 	{
-		if (Slot->Data.ItemIndex == ItemIndex && !Slot->bIsEmpty)
+		if (Slot->Data.ItemIndex == ItemIndex && !Slot->bIsEmpty && Slot->IsConsume())
 		{
 			return Slot;
 		}

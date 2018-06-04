@@ -46,6 +46,10 @@ public:
 		void TryProne();
 	void StartProne();
 	void EndProne();
+	UFUNCTION()
+	void Inventory();
+	UFUNCTION()
+	void GetItem();
 
 	UFUNCTION()
 		void Sprint();

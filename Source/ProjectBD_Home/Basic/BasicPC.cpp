@@ -41,7 +41,7 @@ void ABasicPC::ToggleInventory()
 	}
 	else
 	{
-		Inventory->SetVisibility(ESlateVisibility::Collapsed);
+		Inventory->SetVisibility(ESlateVisibility::Visible);
 		bShowMouseCursor = true;
 		SetInputMode(FInputModeGameAndUI());
 	}
