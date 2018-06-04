@@ -124,4 +124,5 @@ public:
 	void AddPickupItems(class AMasterItem* Item);
 	void RemovePickupItems(class AMasterItem* Item);
 	void ViewItemTooltip();
+	AMasterItem * GetClosestItem();
 };
