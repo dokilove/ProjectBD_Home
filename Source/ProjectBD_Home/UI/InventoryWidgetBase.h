@@ -20,5 +20,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UScrollBox* InventoryScrollBox;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TArray <class UItemSlotWidgetBase*> Slots;
+
+	UFUNCTION(BlueprintCallable)
+		UItemSlotWidgetBase* GetEmptySlot();
+	UFUNCTION(BlueprintCallable)
+		UItemSlotWidgetBase* GetSameIDSlot(int ItemIndex);
 };

@@ -29,6 +29,7 @@ void AMasterItem::BeginPlay()
 		//GetStaticMeshComponent()->SetStaticMesh(AssetLoader.LoadSynchronous<UStaticMesh>(ItemDataTable->GetItemData(ItemIndex).ItemMesh));
 
 		FItemDataTable Data = ItemDataTable->GetItemData(ItemIndex);
+		ItemCount = Data.ItemCount;
 
 		FStreamableManager AssetLoader;
 		GetStaticMeshComponent()->SetStaticMesh(AssetLoader.LoadSynchronous<UStaticMesh>(Data.ItemMesh));

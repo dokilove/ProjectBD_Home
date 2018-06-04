@@ -10,7 +10,7 @@ UENUM(BlueprintType)
 enum class EItemType : uint8
 {
 	Unknown = 0 UMETA(DisplayName ="Unknown"),
-	Comsume = 1 UMETA(DisplayName = "Comsume"),
+	Consume = 1 UMETA(DisplayName = "Consume"),
 	Equip = 2 UMETA(DisplayName = "Equip"),
 };
 
