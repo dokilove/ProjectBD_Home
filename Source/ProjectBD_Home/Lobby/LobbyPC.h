@@ -22,6 +22,9 @@ public:
 		void S2C_SetupWidget();
 	void S2C_SetupWidget_Implementation();
 
+	void GameStart();
+
 	class ULobbyWidgetBase* LobbyWidget;
+
 
 };

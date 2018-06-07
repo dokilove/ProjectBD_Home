@@ -22,3 +22,8 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 		}
 	}
 }
+
+void ALobbyPC::GameStart()
+{
+	GetWorld()->ServerTravel(TEXT("Battle"));
+}

@@ -5,7 +5,8 @@
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Lobby/LobbyPC.h"
 
 void ULobbyWidgetBase::NativeConstruct()
 {
@@ -26,7 +27,11 @@ void ULobbyWidgetBase::NativeConstruct()
 
 void ULobbyWidgetBase::GameStart()
 {
-
+	ALobbyPC* PC = Cast<ALobbyPC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		PC->GameStart();
+	}
 }
 
 void ULobbyWidgetBase::OnTextCommitted(const FText& Text, ETextCommit::Type CommitMethod)

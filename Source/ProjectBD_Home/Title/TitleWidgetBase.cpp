@@ -5,6 +5,7 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "BDGameInstance.h"
+#include "Title/TitlePC.h"
 
 void UTitleWidgetBase::NativeConstruct()
 {
@@ -32,6 +33,8 @@ void UTitleWidgetBase::NativeConstruct()
 
 void UTitleWidgetBase::GameStart()
 {
+	SetUserID();
+	ShowLoading();
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
 }
 
@@ -39,6 +42,8 @@ void UTitleWidgetBase::ConnectServer()
 {
 	if (ServerIP)
 	{
+		SetUserID();
+		ShowLoading();
 		UGameplayStatics::OpenLevel(GetWorld(), *ServerIP->GetText().ToString());
 	}
 }
@@ -57,5 +62,9 @@ void UTitleWidgetBase::SetUserID()
 
 void UTitleWidgetBase::ShowLoading()
 {
-
+	ATitlePC* PC = Cast<ATitlePC>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PC)
+	{
+		PC->ShowLoading();
+	}
 }

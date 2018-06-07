@@ -18,4 +18,6 @@ public:
 	virtual void BeginPlay() override;
 	
 	class UTitleWidgetBase* TitleWidget;
+	class UUserWidget* LoadingWidget;
+	void ShowLoading();
 };
