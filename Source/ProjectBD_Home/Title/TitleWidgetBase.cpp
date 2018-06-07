@@ -4,10 +4,19 @@
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "BDGameInstance.h"
 
 void UTitleWidgetBase::NativeConstruct()
 {
 	UserID = Cast<UEditableTextBox>(GetWidgetFromName("UserID"));
+	if (UserID)
+	{
+		UBDGameInstance* GI = Cast<UBDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GI)
+		{
+			UserID->SetText(FText::FromString(GI->UserID));
+		}
+	}
 	ServerIP = Cast<UEditableTextBox>(GetWidgetFromName("ServerIP"));
 	StartButton = Cast<UButton>(GetWidgetFromName("StartButton"));
 	if (StartButton)
@@ -32,4 +41,21 @@ void UTitleWidgetBase::ConnectServer()
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), *ServerIP->GetText().ToString());
 	}
+}
+
+void UTitleWidgetBase::SetUserID()
+{
+	if (UserID)
+	{
+		UBDGameInstance* GI = Cast<UBDGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (GI)
+		{
+			GI->UserID = UserID->GetText().ToString();
+		}
+	}
+}
+
+void UTitleWidgetBase::ShowLoading()
+{
+
 }

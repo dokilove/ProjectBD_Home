@@ -30,4 +30,6 @@ public:
 	void GameStart();
 	UFUNCTION()
 	void ConnectServer();
+	void SetUserID();
+	void ShowLoading();
 };
