@@ -12,8 +12,10 @@ ABasicPC::ABasicPC()
 
 void ABasicPC::BeginPlay()
 {
-	Super::BeginPlay();
+}
 
+void ABasicPC::SetupWidget()
+{
 	FStringClassReference ItemTooltipRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/ItemTooltipWidget.ItemTooltipWidget_C'"));
 	if (UClass* ItemTooltipClass = ItemTooltipRef.TryLoadClass<UUserWidget>())
 	{
