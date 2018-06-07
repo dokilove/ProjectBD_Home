@@ -23,10 +23,13 @@ void UTitleWidgetBase::NativeConstruct()
 
 void UTitleWidgetBase::GameStart()
 {
-	
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Lobby"), true, TEXT("listen"));
 }
 
 void UTitleWidgetBase::ConnectServer()
 {
-
+	if (ServerIP)
+	{
+		UGameplayStatics::OpenLevel(GetWorld(), *ServerIP->GetText().ToString());
+	}
 }
