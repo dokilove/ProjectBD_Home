@@ -31,4 +31,7 @@ public:
 	class ULobbyWidgetBase* LobbyWidget;
 	class UUserWidget* LoadingWidget;
 
+	FTimerHandle StartTimer;
+	void BattleStart();
+
 };

@@ -2,6 +2,7 @@
 
 #include "LobbyPC.h"
 #include "Lobby/LobbyWidgetBase.h"
+#include "TimerManager.h"
 
 void ALobbyPC::BeginPlay()
 {
@@ -41,7 +42,7 @@ void ALobbyPC::GameStart()
 			PC->S2C_ShowLoading();
 		}
 	}
-	GetWorld()->ServerTravel(TEXT("Battle"));
+	GetWorldTimerManager().SetTimer(StartTimer, this, &ALobbyPC::BattleStart, 1.0f, false);
 }
 
 
@@ -51,4 +52,9 @@ void ALobbyPC::S2C_ShowLoading_Implementation()
 	{
 		LoadingWidget->SetVisibility(ESlateVisibility::Visible);
 	}
+}
+
+void ALobbyPC::BattleStart()
+{
+	GetWorld()->ServerTravel(TEXT("Battle"));
 }
