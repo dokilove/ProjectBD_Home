@@ -38,4 +38,7 @@ public:
 	void HideStartButton();
 
 	void AddChatting(FString Message);
+
+	void SetPublicMessageText(int LeftTime);
+	void SetAliveText(int UserCount);
 };

@@ -5,6 +5,8 @@
 #include "TimerManager.h"
 #include "Components/EditableTextBox.h"
 #include "Components/TextBlock.h"
+#include "Lobby/LobbyGS.h"
+#include "Kismet/GameplayStatics.h"
 
 void ALobbyPC::BeginPlay()
 {
@@ -22,6 +24,15 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 		if (!HasAuthority())
 		{
 			LobbyWidget->HideStartButton();
+		}
+		else
+		{
+			ALobbyGS* GS = UGameplayStatics::GetGameMode(GetWorld())->GetGameState<ALobbyGS>();
+			if (GS)
+			{
+				GS->UserCount = GS->PlayerArray.Num();
+				GS->OnRep_UserCount();
+			}
 		}
 
 		LobbyWidget->ChattingInput->SetUserFocus(this);
@@ -46,6 +57,7 @@ void ALobbyPC::GameStart()
 			PC->S2C_ShowLoading();
 		}
 	}
+
 	GetWorldTimerManager().SetTimer(StartTimer, this, &ALobbyPC::BattleStart, 1.0f, false);
 }
 
@@ -60,6 +72,7 @@ void ALobbyPC::S2C_ShowLoading_Implementation()
 
 void ALobbyPC::BattleStart()
 {
+	//UE_LOG(LogClass, Warning, TEXT("BattleStart"));
 	GetWorld()->ServerTravel(TEXT("Battle"));
 }
 

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "LobbyWidgetBase.h"
 #include "Components/Button.h"
@@ -71,5 +71,23 @@ void ULobbyWidgetBase::AddChatting(FString Message)
 		Text->SetText(FText::FromString(Message));
 		ChattingBox->AddChild(Text);
 		ChattingBox->ScrollToEnd();
+	}
+}
+
+void ULobbyWidgetBase::SetPublicMessageText(int LeftTime)
+{
+	if (PublicMessage)
+	{
+		FString Temp = FString::Printf(TEXT("%d초 남음"), LeftTime);
+		PublicMessage->SetText(FText::FromString(Temp));
+	}
+}
+
+void ULobbyWidgetBase::SetAliveText(int UserCount)
+{
+	if (Alive)
+	{
+		FString Temp = FString::Printf(TEXT("%d인 합류"), UserCount);
+		Alive->SetText(FText::FromString(Temp));
 	}
 }

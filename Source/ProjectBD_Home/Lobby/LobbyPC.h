@@ -30,8 +30,8 @@ public:
 
 	class ULobbyWidgetBase* LobbyWidget;
 	class UUserWidget* LoadingWidget;
-
 	FTimerHandle StartTimer;
+	UFUNCTION()
 	void BattleStart();
 
 	UFUNCTION(Server, Reliable, WithValidation)
