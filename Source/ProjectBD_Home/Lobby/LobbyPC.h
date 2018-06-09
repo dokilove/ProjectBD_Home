@@ -24,7 +24,11 @@ public:
 
 	void GameStart();
 
-	class ULobbyWidgetBase* LobbyWidget;
+	UFUNCTION(Client, Reliable)
+	void S2C_ShowLoading();
+	void S2C_ShowLoading_Implementation();
 
+	class ULobbyWidgetBase* LobbyWidget;
+	class UUserWidget* LoadingWidget;
 
 };

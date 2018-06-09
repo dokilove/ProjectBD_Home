@@ -21,9 +21,31 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 			LobbyWidget->HideStartButton();
 		}
 	}
+
+	FStringClassReference LoadingWidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/LoadingWidget.LoadingWidget_C'"));
+	if (UClass* LoadingWidgetClass = LoadingWidgetRef.TryLoadClass<UUserWidget>())
+	{
+		LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+		LoadingWidget->AddToViewport();
+		LoadingWidget->SetVisibility(ESlateVisibility::Collapsed);
+	}
 }
 
 void ALobbyPC::GameStart()
 {
+	for (auto i = GetWorld()->GetControllerIterator(); i; ++i)
+	{
+		ALobbyPC* PC = Cast<ALobbyPC>(*i);
+		PC->S2C_ShowLoading();
+	}
 	GetWorld()->ServerTravel(TEXT("Battle"));
+}
+
+
+void ALobbyPC::S2C_ShowLoading_Implementation()
+{
+	if (LoadingWidget)
+	{
+		LoadingWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
