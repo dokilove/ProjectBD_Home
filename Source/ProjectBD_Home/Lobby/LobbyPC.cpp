@@ -33,10 +33,13 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 
 void ALobbyPC::GameStart()
 {
-	for (auto i = GetWorld()->GetControllerIterator(); i; ++i)
+	if (HasAuthority())
 	{
-		ALobbyPC* PC = Cast<ALobbyPC>(*i);
-		PC->S2C_ShowLoading();
+		for (auto i = GetWorld()->GetControllerIterator(); i; ++i)
+		{
+			ALobbyPC* PC = Cast<ALobbyPC>(*i);
+			PC->S2C_ShowLoading();
+		}
 	}
 	GetWorld()->ServerTravel(TEXT("Battle"));
 }
