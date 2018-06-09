@@ -14,7 +14,8 @@ class PROJECTBD_HOME_API ABattleGM : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void BeginPlay() override;
 	
-	
-	
+	TArray <class AActor*> ItemPoints;
 };

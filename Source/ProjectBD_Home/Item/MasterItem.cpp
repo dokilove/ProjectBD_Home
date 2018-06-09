@@ -7,6 +7,8 @@
 #include "Engine/StreamableManager.h"
 #include "Engine/AssetManager.h"
 #include "Player/MyCharacter.h"
+#include "Engine/StaticMesh.h"
+#include "UnrealNetwork.h"
 
 AMasterItem::AMasterItem()
 {
@@ -17,13 +19,19 @@ AMasterItem::AMasterItem()
 	Sphere->bGenerateOverlapEvents = true;
 	
 	ItemDataTable = CreateDefaultSubobject<UItemDataTableComponent>(TEXT("ItemDataTable"));
+
+
+	bReplicates = true;
 }
 
 void AMasterItem::BeginPlay()
 {
 	if (ItemDataTable && ItemDataTable->DataTable)
 	{
-		ItemIndex = FMath::RandRange(1, 6) * 10;
+		if (HasAuthority())
+		{
+			ItemIndex = FMath::RandRange(1, 6) * 10;
+		}
 		
 		//FStreamableManager& AssetLoader = UAssetManager::GetStreamableManager();
 		//GetStaticMeshComponent()->SetStaticMesh(AssetLoader.LoadSynchronous<UStaticMesh>(ItemDataTable->GetItemData(ItemIndex).ItemMesh));
@@ -37,6 +45,13 @@ void AMasterItem::BeginPlay()
 		Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMasterItem::OnBeginOverlap);
 		Sphere->OnComponentEndOverlap.AddDynamic(this, &AMasterItem::OnEndOverlap);
 	}
+}
+
+void AMasterItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMasterItem, ItemIndex);
 }
 
 void AMasterItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
