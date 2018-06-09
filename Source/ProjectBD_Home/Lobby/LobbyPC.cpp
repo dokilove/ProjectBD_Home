@@ -3,6 +3,8 @@
 #include "LobbyPC.h"
 #include "Lobby/LobbyWidgetBase.h"
 #include "TimerManager.h"
+#include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 
 void ALobbyPC::BeginPlay()
 {
@@ -21,6 +23,8 @@ void ALobbyPC::S2C_SetupWidget_Implementation()
 		{
 			LobbyWidget->HideStartButton();
 		}
+
+		LobbyWidget->ChattingInput->SetUserFocus(this);
 	}
 
 	FStringClassReference LoadingWidgetRef(TEXT("WidgetBlueprint'/Game/Blueprints/UI/LoadingWidget.LoadingWidget_C'"));
@@ -57,4 +61,30 @@ void ALobbyPC::S2C_ShowLoading_Implementation()
 void ALobbyPC::BattleStart()
 {
 	GetWorld()->ServerTravel(TEXT("Battle"));
+}
+
+void ALobbyPC::C2S_ChattingInput_Implementation(const FString& Message)
+{
+	if (HasAuthority())
+	{
+		for (auto i = GetWorld()->GetControllerIterator(); i; ++i)
+		{
+			ALobbyPC* PC = Cast<ALobbyPC>(*i);
+			PC->S2C_AddChatting(Message);
+		}
+	}
+}
+
+void ALobbyPC::S2C_AddChatting_Implementation(const FString & Message)
+{
+	//UE_LOG(LogClass, Warning, TEXT("%s"), *Message);
+	if (LobbyWidget)
+	{
+		LobbyWidget->AddChatting(Message);
+	}
+}
+
+bool ALobbyPC::C2S_ChattingInput_Validate(const FString & Message)
+{
+	return true;
 }

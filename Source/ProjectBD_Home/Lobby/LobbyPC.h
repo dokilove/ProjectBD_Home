@@ -34,4 +34,13 @@ public:
 	FTimerHandle StartTimer;
 	void BattleStart();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void C2S_ChattingInput(const FString& Message);
+	bool C2S_ChattingInput_Validate(const FString& Message);
+	void C2S_ChattingInput_Implementation(const FString& Message);
+
+	UFUNCTION(Client, Reliable)
+	void S2C_AddChatting(const FString& Message);
+	void S2C_AddChatting_Implementation(const FString& Message);
+
 };

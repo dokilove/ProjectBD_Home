@@ -37,4 +37,5 @@ public:
 
 	void HideStartButton();
 
+	void AddChatting(FString Message);
 };
